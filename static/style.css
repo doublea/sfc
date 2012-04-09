@@ -61,3 +61,8 @@ body {
     left: 55px;
     z-index: 1;
 }
+
+#toolbar {
+    position: fixed;
+    bottom: 0px;
+}

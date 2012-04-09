@@ -1,5 +1,8 @@
 {% macro render_map_object(object) %}
 <img src="{{ url_for('static', filename='images/spacehex.png') }}" title="{{ object.type }}"/>
+<div class="hex-info" style="visibility: hidden; position: absolute">
+    <p>Type: {{ object.type }}</p>
+</div>
 {% endmacro %}
 
 {% extends "base.html" %}
@@ -8,6 +11,11 @@
     {{ super() }}
     <script type="text/javascript">
         $(document).ready(function() {
+            $('#toolbar').accordion({
+                collapsible: true,
+                active: false,
+            });
+
             var selected_hex = null;
             $('.hex').mouseenter(function(ev) {
                 if (this != selected_hex) {
@@ -20,6 +28,13 @@
             }).click(function(ev) {
                 if (selected_hex != null) {
                     $(selected_hex).children('.hex-border').attr('src', "{{ url_for('static', filename='images/bluehex.png') }}");
+                }
+                var info = $(this).children('.hex-info').html();
+                if (info != undefined) {
+                    $('#hex-info-target').html(info);
+                    if (!$('#toolbar > h3').hasClass('ui-state-active')) {
+                        $('#toolbar').accordion('activate', 0);
+                    }
                 }
                 selected_hex = this;
                 $(this).children(".hex-border").attr('src', "{{ url_for('static', filename='images/redhex.png') }}");
@@ -47,5 +62,13 @@
         </div>
     {% endfor %}
     {% endfor %}
-</div>
+    </div>
+    <div id="toolbar">
+        <h3>
+        	<a href="#">Info</a>
+        </h3>
+        <div id="hex-info-target">
+            <p>Select a hex</p>
+        </div>
+    </div>
 {% endblock %}
