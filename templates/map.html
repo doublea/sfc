@@ -1,0 +1,51 @@
+{% macro render_map_object(object) %}
+<img src="{{ url_for('static', filename='images/spacehex.png') }}" title="{{ object.type }}"/>
+{% endmacro %}
+
+{% extends "base.html" %}
+{% block title %}Map{% endblock %}
+{% block head %}
+    {{ super() }}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            var selected_hex = null;
+            $('.hex').mouseenter(function(ev) {
+                if (this != selected_hex) {
+                    $(this).children('.hex-border').attr('src', "{{ url_for('static', filename='images/yellowhex.png') }}");
+                }
+            }).mouseleave(function(ev) {
+                if (this != selected_hex) {
+                    $(this).children('.hex-border').attr('src', "{{ url_for('static', filename='images/bluehex.png') }}");
+                }
+            }).click(function(ev) {
+                if (selected_hex != null) {
+                    $(selected_hex).children('.hex-border').attr('src', "{{ url_for('static', filename='images/bluehex.png') }}");
+                }
+                selected_hex = this;
+                $(this).children(".hex-border").attr('src', "{{ url_for('static', filename='images/redhex.png') }}");
+            });
+        });
+    </script>
+{% endblock %}
+{% block content %}
+    <h1>Map</h1>
+    <div id="map" style="position: relative">
+    {% for a in range(x, x+w) %}
+    {% for b in range(y, y+h) %}
+            {% set absx = a*105 %}
+            {% if a%2 == 1 %}
+            {% set absy = b*120+60 %}
+            {% else %}
+            {% set absy = b*120 %}
+        {% endif %}
+        <div class="hex" style="position: absolute; left: {{ absx }}px; top: {{ absy }}px">
+            <img class="hex-border" src="{{ url_for('static', filename='images/bluehex.png') }}"/>
+            {% for object in objects[(a, b)] %}
+                {{ render_map_object(object) }}
+            {% endfor %}
+            <div class="hex-label">{{ a }}, {{ b }}</div>
+        </div>
+    {% endfor %}
+    {% endfor %}
+</div>
+{% endblock %}
