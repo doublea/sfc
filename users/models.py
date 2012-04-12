@@ -1,4 +1,4 @@
-from flaskext.sqlalchemy import SQLAlchemy
+from flask.ext.sqlalchemy import SQLAlchemy
 from flaskext.login import UserMixin
 
 from .users import db

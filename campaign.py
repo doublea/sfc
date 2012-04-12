@@ -2,7 +2,7 @@
 from collections import defaultdict
 
 from flask import Flask, render_template, flash, redirect, url_for
-from flaskext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 from users.users import create_users_blueprint, login_required
 from models import *
 from forms import *
