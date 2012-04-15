@@ -23,7 +23,7 @@ def map(x=0, y=0, w=20, h=20):
 
     obj_dict = defaultdict(lambda: [])
     for obj in objs:
-        obj_dict[(obj.x, obj.y)].append(obj)
+        obj_dict["%s, %s" % (obj.x, obj.y)].append(obj.to_dict())
     return render_template('map.html', x=x, y=y, w=w, h=h, objects=obj_dict)
 
 if __name__ == '__main__':

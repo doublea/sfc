@@ -1,8 +1,5 @@
 {% macro render_map_object(object) %}
 <img src="{{ url_for('static', filename='images/spacehex.png') }}" title="{{ object.type }}"/>
-<div class="hex-info" style="visibility: hidden; position: absolute">
-    <p>Type: {{ object.type }}</p>
-</div>
 {% endmacro %}
 
 {% extends "base.html" %}
@@ -29,12 +26,13 @@
                 if (selected_hex != null) {
                     $(selected_hex).children('.hex-border').attr('src', "{{ url_for('static', filename='images/bluehex.png') }}");
                 }
-                var info = $(this).children('.hex-info').html();
-                if (info != undefined) {
-                    $('#hex-info-target').html(info);
-                    if (!$('#toolbar > h3').hasClass('ui-state-active')) {
-                        $('#toolbar').accordion('activate', 0);
-                    }
+                for (var obj in eval(this.dataset['hex'])) {
+                    console.log(obj);
+                    $('#hex-info-title').html(Object.keys(obj)[0]);
+                    $('#hex-info-target').html(obj[Object.keys(obj)[0]]);
+                }
+                if (!$('#toolbar > h3').hasClass('ui-state-active')) {
+                    $('#toolbar').accordion('activate', 0);
                 }
                 selected_hex = this;
                 $(this).children(".hex-border").attr('src', "{{ url_for('static', filename='images/redhex.png') }}");
@@ -53,9 +51,9 @@
             {% else %}
             {% set absy = b*120 %}
         {% endif %}
-        <div class="hex" style="position: absolute; left: {{ absx }}px; top: {{ absy }}px">
-            <img class="hex-border" src="{{ url_for('static', filename='images/bluehex.png') }}"/>
-            {% for object in objects[(a, b)] %}
+        <div class="hex" style="position: absolute; left: {{ absx }}px; top: {{ absy }}px" data-hex="{{ objects["%s, %s" % (a,b)]|tojson }}">
+            <img class="hex-border" src="{{ url_for('static', filename='images/bluehex.png') }}" />
+            {% for object in objects["%s, %s" % (a, b)] %}
                 {{ render_map_object(object) }}
             {% endfor %}
             <div class="hex-label">{{ a }}, {{ b }}</div>
@@ -65,7 +63,7 @@
     </div>
     <div id="toolbar">
         <h3>
-        	<a href="#">Info</a>
+        	<a id="hex-info-title" href="#">Info</a>
         </h3>
         <div id="hex-info-target">
             <p>Select a hex</p>

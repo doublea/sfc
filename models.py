@@ -3,7 +3,12 @@ from sqlalchemy.orm import relationship
 from flask.ext.login import UserMixin
 from campaign import db
 
-class MapObject(db.Model):
+class JSONifiableModel(object):
+    def to_dict(self):
+        cols = [ col.name for col in self.__table__.columns ]
+        return {self.__class__.__name__:dict(zip(cols, [ getattr(self, col) for col in cols ]))}
+
+class MapObject(db.Model, JSONifiableModel):
     __tablename__ = 'map_objects'
     id = db.Column(db.Integer, primary_key=True)
     x = db.Column(db.Integer)
@@ -28,7 +33,7 @@ class Ship(MapObject):
     ship_id = db.Column(db.Integer, db.ForeignKey('map_objects.id'), primary_key=True)
     model_id = db.Column(db.Integer, db.ForeignKey('shiplist.id'))
 
-class ShipModel(db.Model):
+class ShipModel(db.Model, JSONifiableModel):
     __tablename__ = 'shiplist'
     id = db.Column(db.Integer, primary_key=True)
     instances = relationship("Ship", backref='model')
