@@ -17,7 +17,7 @@ def create_users_blueprint(app, _db, login_redirect_view='main'):
 
     login_manager = LoginManager()
     login_manager.setup_app(app)
-    login_manager.login_view = 'login'
+    login_manager.login_view = 'users.login'
 
     @login_manager.user_loader
     def user_loader(user_id):
@@ -32,15 +32,15 @@ def create_users_blueprint(app, _db, login_redirect_view='main'):
                 flash("Invalid email or password", "error")
             else:
                 login_user(user)
-                flash("Login successful")
-                return redirect(url_for('main'))
+                flash("Login successful", 'success')
+                return redirect(url_for(login_redirect_view))
         return render_template('users/login.html', form=form)
 
     @users_blueprint.route('/logout/')
     @login_required
     def logout():
         logout_user()
-        return redirect(url_for('main'))
+        return redirect(url_for(login_redirect_view))
 
     @users_blueprint.route('/register/', methods=['GET', 'POST'])
     def register():

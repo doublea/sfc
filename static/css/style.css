@@ -1,0 +1,34 @@
+body {
+    padding-top: 60px;
+}
+
+#map-controls {
+    background-color: rgba(255,255,255,0.5);
+    float: left;
+}
+
+#zoom {
+    margin-left: auto;
+    margin-right: auto;
+    height: 200px;
+}
+
+.hex {
+    position: absolute;
+}
+
+.hex img {
+    position: absolute;
+}
+
+.hex-label {
+    position: relative;
+    float: left;
+    top: 95px;
+    left: 55px;
+}
+
+#toolbar {
+    position: fixed;
+    bottom: 0px;
+}

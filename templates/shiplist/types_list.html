@@ -1,0 +1,16 @@
+<div class="span-one-third">
+<div class="tabbable tabs-left">
+    <ul class="nav nav-tabs">
+        {%- for type in types %}
+        <li><a href="#race-{{ race }}-type-{{ type }}" class="type-tab" data-toggle="tab">{{ type }}</a></li>
+        {%- endfor %}
+    </ul>
+</div>
+</div>
+<div class="span-one-third">
+<div class="tab-content">
+    {%- for type in types %}
+    <div class="tab-pane" id="race-{{ race }}-type-{{ type }}"></div>
+    {%- endfor %}
+</div>
+</div>

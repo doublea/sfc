@@ -219,22 +219,29 @@ def iter_ships(path):
                     setattr(s, attr, value)
             yield s
 
-def set_up(shiplist_path="./shiplist.txt"):
+def import_shiplist(path='./shiplist.txt'):
+    t0 = time.time()
+    this_sec = 0
+    total = 0
+    for ship in iter_ships(path):
+        db.session.add(ship)
+        if time.time() - t0 >= 1:
+            print this_sec, "per second.", total, "total."
+            this_sec = 0
+            t0 = time.time()
+        else:
+            this_sec += 1
+        total += 1
+    print "Commiting to DB..."
+    db.session.commit()
+    print "Imported", total, "ships."
+
+def set_up():
     print "Creating database schema...",
     db.create_all()
     print "Done"
 
     print "Importing ships from shiplist..."
-    t0 = time.time()
-    i = 0
-    for ship in iter_ships(shiplist_path):
-        db.session.add(ship)
-        if time.time() - t0 >= 1:
-            print i, "per second"
-            i = 0
-            t0 = time.time()
-        else:
-            i += 1
-    db.session.commit()
+    import_shiplist()
     print "Done"
 

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Shiplist{% endblock %}
+{% block head %}
+{{ super() }}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('.race-tab').on('show', function(e) {
+            var race = e.target.href.substr(e.target.href.search('#')+6);
+            var target = $('#race-'+race);
+            if (target.html().length == 0) {
+                target.load('/shiplist/'+race+'/', function() {
+                    $(this).find('a[data-toggle="tab"]').on('show', function(e) {
+                        var type = e.target.href.substr(e.target.href.search('type-')+5);
+                        var target = $('#race-'+race+'-type-'+type);
+                        if (target.html().length == 0) {
+                            target.load('/shiplist/'+race+'/'+type+'/', function() {
+                                $(this).find('a').click(function(e){
+                                    var model = e.target.innerText;
+                                    $('#ship-info').load('/shiplist/'+race+'/'+type+'/'+model+'/');
+                                });
+                            });
+                        }
+                    });
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}
+{% block content %}
+    <h1>Shiplist</h1>
+    <div class="row">
+        <div class="span6">
+            <div class="row">
+                <div class="span-one-third">
+                    <div class="tabbable tabs-left">
+                        <ul class="nav nav-tabs">
+                            {%- for race in races %}
+                            <li><a href="#race-{{ race }}" class="race-tab" data-toggle="tab">{{ race }}</a></li>
+                            {%- endfor %}
+                        </ul>
+                    </div>
+                </div>
+                <div class="span-two-thirds">
+                <div class="tab-content">
+                    {%- for race in races %}
+                    <div class="tab-pane" id="race-{{ race }}"></div>
+                    {%- endfor %}
+                </div>
+                </div>
+            </div>
+        </div>
+        <div class="span6" id="ship-info"></div>
+    </div>
+{% endblock %}

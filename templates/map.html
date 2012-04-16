@@ -1,5 +1,5 @@
 {% macro render_map_object(object) %}
-<img src="{{ url_for('static', filename='images/spacehex.png') }}" title="{{ object.type }}"/>
+<img src="{{ url_for('static', filename='img/spacehex.png') }}" title="{{ object.type }}"/>
 {% endmacro %}
 
 {% extends "base.html" %}
@@ -16,15 +16,15 @@
             var selected_hex = null;
             $('.hex').mouseenter(function(ev) {
                 if (this != selected_hex) {
-                    $(this).children('.hex-border').attr('src', "{{ url_for('static', filename='images/yellowhex.png') }}");
+                    $(this).children('.hex-border').attr('src', "{{ url_for('static', filename='img/yellowhex.png') }}");
                 }
             }).mouseleave(function(ev) {
                 if (this != selected_hex) {
-                    $(this).children('.hex-border').attr('src', "{{ url_for('static', filename='images/bluehex.png') }}");
+                    $(this).children('.hex-border').attr('src', "{{ url_for('static', filename='img/bluehex.png') }}");
                 }
             }).click(function(ev) {
                 if (selected_hex != null) {
-                    $(selected_hex).children('.hex-border').attr('src', "{{ url_for('static', filename='images/bluehex.png') }}");
+                    $(selected_hex).children('.hex-border').attr('src', "{{ url_for('static', filename='img/bluehex.png') }}");
                 }
                 for (var obj in eval(this.dataset['hex'])) {
                     console.log(obj);
@@ -35,7 +35,7 @@
                     $('#toolbar').accordion('activate', 0);
                 }
                 selected_hex = this;
-                $(this).children(".hex-border").attr('src', "{{ url_for('static', filename='images/redhex.png') }}");
+                $(this).children(".hex-border").attr('src', "{{ url_for('static', filename='img/redhex.png') }}");
             });
         });
     </script>
@@ -45,14 +45,14 @@
     <div id="map" style="position: relative">
     {% for a in range(x, x+w) %}
     {% for b in range(y, y+h) %}
-            {% set absx = a*105 %}
+            {% set absx = (a-x)*105 %}
             {% if a%2 == 1 %}
-            {% set absy = b*120+60 %}
+            {% set absy = (b-y)*120+60 %}
             {% else %}
-            {% set absy = b*120 %}
+            {% set absy = (b-y)*120 %}
         {% endif %}
         <div class="hex" style="position: absolute; left: {{ absx }}px; top: {{ absy }}px" data-hex="{{ objects["%s, %s" % (a,b)]|tojson }}">
-            <img class="hex-border" src="{{ url_for('static', filename='images/bluehex.png') }}" />
+            <img class="hex-border" src="{{ url_for('static', filename='img/bluehex.png') }}" />
             {% for object in objects["%s, %s" % (a, b)] %}
                 {{ render_map_object(object) }}
             {% endfor %}
