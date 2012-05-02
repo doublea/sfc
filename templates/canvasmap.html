@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+    <title></title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js" type="text/javascript"></script>
+    <script src="http://jashkenas.github.com/coffee-script/extras/coffee-script.js" type="text/javascript" charset="utf-8"></script>
+    <script type="text/coffeescript">
+        class GridViewport
+            constructor: (@canvas, @grid, @x=0, @y=0, @zoom=1) ->
+                @width = Math.min(@canvas.attr('width'), @grid.buffer.attr('width'))
+                @height = Math.min(@canvas.attr('height'), @grid.buffer.attr('height'))
+                @dirty = true
+            draw: =>
+                if @dirty
+                    ctx = @canvas[0].getContext('2d')
+                    ctx.drawImage(@grid.buffer[0],
+                                  @x,
+                                  @y,
+                                  @width,
+                                  @height,
+                                  @canvas.attr('width')*@zoom,
+                                  @canvas.attr('height')*@zoom)
+                    @dirty = false
+
+
+
+        class HexGrid
+            constructor: (@sizex, @sizey, @tileimg, @hexw = 140, @hexh = 120) ->
+                @buffer = $('<canvas/>')
+                @buffer.attr('width', (@sizex+1)*@hexw*3/4)
+                @buffer.attr('height', (0.5+@sizey)*@hexh)
+                @drawHexes()
+            drawHexes: =>
+                ctx = @buffer[0].getContext('2d')
+                for x in [0..@sizex-1]
+                    for y in [0..@sizey-1]
+                        
+                @
+                
+        $ ->
+            grid = new HexGrid(20, 20)
+            grid.drawHexes()
+            viewport = new GridViewport($('#map'), grid)
+            setInterval(viewport.draw, 200)
+    </script>
+</head>
+<body>
+    <canvas id="map" width="600px" height="400px"></canvas>
+</body>
+</html>
