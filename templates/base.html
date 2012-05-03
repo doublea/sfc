@@ -39,6 +39,7 @@
                             {%- if current_user.is_authenticated() %}
                                 {%- set available_sections = [
                                     ('map_home', 'Map'),
+                                    ('canvasmap', 'Canvas Map'),
                                     ('shiplist', 'Shiplist'),
                                     ('users.logout', 'Logout'),
                                 ] %}

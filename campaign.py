@@ -28,6 +28,17 @@ def map_home(x=0, y=0, w=20, h=20):
         obj_dict["%s, %s" % (obj.x, obj.y)].append(obj.to_dict())
     return render_template('map.html', x=x, y=y, w=w, h=h, objects=obj_dict)
 
+@app.route('/canvasmap/')
+@app.route('/canvasmap/<int:x>/<int:y>/<int:w>/<int:h>')
+def canvasmap(x=0, y=0, w=20, h=20):
+    objs = MapObject.query.filter(MapObject.x >= x, MapObject.x < x+w,
+                                  MapObject.y >= y, MapObject.y < y+h).all()
+
+    obj_dict = defaultdict(lambda: [])
+    for obj in objs:
+        obj_dict["%s, %s" % (obj.x, obj.y)].append(obj.to_dict())
+    return render_template('canvasmap.html', x=x, y=y, w=w, h=h, objects=obj_dict)
+
 @app.route('/shiplist/')
 @app.route('/shiplist/<race>/')
 @app.route('/shiplist/<race>/<type>/')
@@ -49,4 +60,4 @@ def shiplist(race=None, type=None, model=None):
     return render_template('shiplist/ship.html', ship=ShipModel.query.filter(ShipModel.ship_class == model).one())
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run('0.0.0.0', debug=True)
