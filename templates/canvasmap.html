@@ -4,6 +4,12 @@
     <script src="http://jashkenas.github.com/coffee-script/extras/coffee-script.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/coffeescript">
         $ ->
+            Number::lpad = (pad) ->
+                n = "" + @
+                if pad <= n.length
+                    return n
+                ("0" for [1..pad-n.length]).join("") + n
+
             stage = new Kinetic.Stage
                 container: "map"
                 width: 800
@@ -14,12 +20,28 @@
                 dragBounds:
                     top: -vsep*21+stage.getHeight()
                     bottom: 0 
-                    right: 0
                     left: -120*3/4*21+stage.getWidth()
+            mouseHex = new Kinetic.RegularPolygon
+                        x: 0
+                        y: 0
+                        sides: 6
+                        radius: 60
+                        stroke: 'blue'
+                        fill: 'rgba(0,0,0,0)'
+                        rotation: Math.PI/2
+                        visible: false
+            mouseHex.listen(false)
+            mouseLayer = new Kinetic.Layer
+            mouseLayer.add(mouseHex)
+
+            hexLayer.on('dragstart', ->
+                mouseHex.hide()
+                mouseLayer.draw())
+
             for x in [1..20]
                 for y in [1..20]
                     text = new Kinetic.Text
-                        text: "#{x}, #{y}"
+                        text: x.lpad(2) + y.lpad(2)
                         x: x*120*3/4
                         y: (if x%2 == 1 then y*vsep else (y+0.5)*vsep)+(vsep/2-10)
                         textFill: 'black'
@@ -34,17 +56,30 @@
                         fill: 'white'
                         rotation: Math.PI/2
                     hex.on('mouseover', -> 
-                        @setStroke('blue')
-                        hex.draw())
-                    hex.on('mouseout', ->
-                        @setStroke('black')
-                        hex.draw())
+                        mouseHex.setAbsolutePosition(@getAbsolutePosition())
+                        mouseHex.show()
+                        mouseLayer.draw())
                     hexLayer.add(hex)
                     hexLayer.add(text)
             stage.add(hexLayer)
+            stage.add(mouseLayer)
+
+            $('#zoom').change(->
+                z = @value/100
+                hexLayer.setScale(z,z)
+                hexLayer.setDragBounds
+                    top: -vsep*21*z+stage.getHeight()
+                    bottom: 0 
+                    left: -120*3/4*21*z+stage.getWidth()
+                hexLayer.draw()
+                mouseLayer.setScale(z,z)
+                mouseLayer.draw())
     </script>
 </head>
 <body>
     <div id="map"></div>
+    <div id="map-controls">
+        <div id="controls"><input id="zoom" type="range" value="100" min="30" max="200"/></div>
+    </div>
 </body>
 </html>
