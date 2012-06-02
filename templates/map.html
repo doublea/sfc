@@ -6,6 +6,7 @@
 {% block title %}Map{% endblock %}
 {% block head %}
     {{ super() }}
+    <script src="/static/js/jquery.overscroll.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         $(document).ready(function() {
             $('#toolbar').accordion({
@@ -37,11 +38,12 @@
                 selected_hex = this;
                 $(this).children(".hex-border").attr('src', "{{ url_for('static', filename='img/redhex.png') }}");
             });
+
+            $('#map').overscroll({dragHold: true});
         });
     </script>
 {% endblock %}
 {% block content %}
-    <h1>Map</h1>
     <div id="map" style="position: relative">
     {% for a in range(x, x+w) %}
     {% for b in range(y, y+h) %}
